@@ -1,6 +1,12 @@
 // 预定义的名字列表
 const predefinedNames = ["小明", "小红", "小刚", "小丽"];
-const drawnNames = new Set();
+// 从 localStorage 获取已抽中的名字
+const drawnNames = new Set(JSON.parse(localStorage.getItem("drawnNames")) || []);
+
+// 更新 localStorage 中已抽中的名字
+function updateDrawnNames() {
+  localStorage.setItem("drawnNames", JSON.stringify([...drawnNames]));
+}
 
 document.getElementById("drawButton").addEventListener("click", () => {
   const remainingNames = predefinedNames.filter((name) => !drawnNames.has(name));
@@ -14,6 +20,9 @@ document.getElementById("drawButton").addEventListener("click", () => {
   const randomIndex = Math.floor(Math.random() * remainingNames.length);
   const drawnName = remainingNames[randomIndex];
   drawnNames.add(drawnName);
+
+  // 更新 localStorage
+  updateDrawnNames();
 
   document.getElementById("result").innerText = `恭喜你抽中了：${drawnName}`;
   document.getElementById("drawButton").disabled = true;
