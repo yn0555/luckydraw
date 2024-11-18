@@ -1,14 +1,20 @@
+// 预定义的名字列表
+const predefinedNames = ["小明", "小红", "小刚", "小丽"];
+const drawnNames = new Set();
+
 document.getElementById("drawButton").addEventListener("click", () => {
-    fetch("/draw", { method: "POST" })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          document.getElementById("result").innerText = `恭喜你抽中了：${data.name}`;
-          document.getElementById("drawButton").disabled = true;
-        } else {
-          document.getElementById("result").innerText = data.message;
-        }
-      })
-      .catch((error) => console.error("Error:", error));
-  });
-  
+  const remainingNames = predefinedNames.filter((name) => !drawnNames.has(name));
+
+  if (remainingNames.length === 0) {
+    document.getElementById("result").innerText = "所有名字已被抽完！";
+    document.getElementById("drawButton").disabled = true;
+    return;
+  }
+
+  const randomIndex = Math.floor(Math.random() * remainingNames.length);
+  const drawnName = remainingNames[randomIndex];
+  drawnNames.add(drawnName);
+
+  document.getElementById("result").innerText = `恭喜你抽中了：${drawnName}`;
+  document.getElementById("drawButton").disabled = true;
+});
